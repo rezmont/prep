@@ -1,5 +1,4 @@
 from collections import deque
-import sys
 
 class TreeNode(object):
     """docstring for TreeNode"""
@@ -43,7 +42,7 @@ class TreeNode(object):
                 # print parrent, node.val
                 ret_buff.append('{0} -> {1}'.format(parrent, node.val))
             else:
-                parrent = 'None'
+                parrent = 'Root'
                 if p is not None:
                     parrent = p.val
                 # print parrent, node.val
@@ -51,7 +50,6 @@ class TreeNode(object):
         if len(ret_buff):
             ret_strings.append(';'.join(ret_buff))
         return('\n'.join(ret_strings))
-
 
 def make_balanced_tree(arr):
     if len(arr) == 0:
@@ -70,7 +68,6 @@ def make_balanced_tree(arr):
             q.append(node.r)
     q.clear()
     return head
-
 
 def make_balanced_bst(arr):
     if len(arr) == 0:
@@ -91,8 +88,50 @@ def make_balanced_bst(arr):
     return head
 
 
+def is_equal(head1, head2):
+    s1 = [head1]
+    s2 = [head2]
+    while len(s1)>0 and len(s2)>0:
+        ptr1 = s1.pop()
+        ptr2 = s2.pop()
+        if ptr1 is None and ptr2 is None:
+            continue
+        elif (ptr1 is None) ^ (ptr2 is None):
+            return False
+        if ptr1.val != ptr2.val:
+            return False
+        s1.append(ptr1.l)
+        s1.append(ptr1.r)
+        s2.append(ptr2.l)
+        s2.append(ptr2.r)
+
+    if len(s1)>0 or len(s2)>0:
+        return False
+    return True
+
+
+
+def is_subtree(head1, head2):
+    s = deque()
+    s.append(head1)
+    while len(s)>0:
+        ptr = s.popleft()
+        if is_equal(ptr, head2):
+            return True
+        if ptr.l is not None:
+            s.append(ptr.l)
+        if ptr.r is not None:
+            s.append(ptr.r)
+
+    return False
+
 if __name__ == '__main__':
-    array = range(10)
-    head = make_balanced_bst(array)
-    print array
-    print head
+    arr = range(10)
+    head1 = make_balanced_tree(arr)
+    print head1
+    print    
+    arr = [4, 9]
+    head2 = make_balanced_tree(arr)
+    print head2
+    print
+    print is_subtree(head1, head2)

@@ -1,5 +1,4 @@
 from collections import deque
-import sys
 
 class TreeNode(object):
     """docstring for TreeNode"""
@@ -52,47 +51,37 @@ class TreeNode(object):
             ret_strings.append(';'.join(ret_buff))
         return('\n'.join(ret_strings))
 
-
-def make_balanced_tree(arr):
-    if len(arr) == 0:
+def build_tree_from_in_pre(in_order, pre_order):
+    if len(in_order) == 0:
         return None
+    root_val = pre_order[0]
+    l_in_order = []
+    r_in_order = []
+    is_root_met = False
+    for el in in_order:
+        if el == root_val:
+            is_root_met = True
+            continue
+        if not is_root_met:
+            l_in_order.append(el)
+        else:
+            r_in_order.append(el)
 
-    head = TreeNode(arr[0])
-    q = deque()
-    q.append(head)
-    for i in xrange(1, len(arr), 2):
-        node = q.popleft()
-        node.add_left(arr[i])
-        q.append(node.l)
-        
-        if len(arr) > (i+1):
-            node.add_right(arr[i+1])
-            q.append(node.r)
-    q.clear()
-    return head
+    root = TreeNode(root_val)
+    print l_in_order, pre_order[1:len(l_in_order)+1]
+    print r_in_order, pre_order[len(l_in_order)+1:]
 
-
-def make_balanced_bst(arr):
-    if len(arr) == 0:
-        return None
-    elif len(arr) == 1:
-        return TreeNode(arr[0])
-    elif len(arr) == 2:
-        head = TreeNode(arr[1])
-        head.add_left(arr[0])
-        return head
-
-    mid = len(arr)/2
-    head = TreeNode(arr[mid])
-    l = make_balanced_bst(arr[:mid])
-    r = make_balanced_bst(arr[mid+1:])
-    head.l = l
-    head.r = r
-    return head
-
+    l = build_tree_from_in_pre(l_in_order, pre_order[1:len(l_in_order)+1])
+    r = build_tree_from_in_pre(r_in_order, pre_order[len(l_in_order)+1:])
+    root.l = l
+    root.r = r
+    return root
 
 if __name__ == '__main__':
-    array = range(10)
-    head = make_balanced_bst(array)
-    print array
-    print head
+    in_order = ['D', 'B' ,'E', 'A', 'F', 'C']
+    pre_order = ['A', 'B', 'D', 'E', 'C', 'F']
+
+    # pre_pos_begin = 0
+    # pre_pos_end = len(pre_order-1)
+    root = build_tree_from_in_pre(in_order, pre_order)
+    print root

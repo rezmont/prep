@@ -1,6 +1,23 @@
 from collections import deque
 import sys
 
+class SLLNode(object):
+    def __init__(self, arg):
+        self.obj_ptr = arg
+        self.next = None
+
+    def add_next(self, arg):
+        self.next = arg
+
+    def __repr__(self):
+        str_arr = []
+        ptr = self
+        while ptr is not None:
+            str_arr.append(str(ptr.obj_ptr.val))
+            ptr = ptr.next
+        return ' -> '.join(str_arr)
+
+
 class TreeNode(object):
     """docstring for TreeNode"""
     def __init__(self, arg):
@@ -52,7 +69,6 @@ class TreeNode(object):
             ret_strings.append(';'.join(ret_buff))
         return('\n'.join(ret_strings))
 
-
 def make_balanced_tree(arr):
     if len(arr) == 0:
         return None
@@ -71,28 +87,34 @@ def make_balanced_tree(arr):
     q.clear()
     return head
 
+def link_same_height_nodes(head):
+    ptr_list_head = []
+    ptr_list_tail = []
+    q = deque()
+    q.append((0, head))
+    while len(q)>0:
+        h, node = q.popleft()
+        if h >= len(ptr_list_head):
+            aux_head = SLLNode(node)
+            ptr_list_head.append(aux_head)
+            ptr_list_tail.append(aux_head)
+        else:
+            ptr_list_tail[h].add_next(SLLNode(node))
+            ptr_list_tail[h] = ptr_list_tail[h].next
 
-def make_balanced_bst(arr):
-    if len(arr) == 0:
-        return None
-    elif len(arr) == 1:
-        return TreeNode(arr[0])
-    elif len(arr) == 2:
-        head = TreeNode(arr[1])
-        head.add_left(arr[0])
-        return head
+        if node.l is not None:
+            q.append((h+1, node.l))
+        if node.r is not None:
+            q.append((h+1, node.r))
 
-    mid = len(arr)/2
-    head = TreeNode(arr[mid])
-    l = make_balanced_bst(arr[:mid])
-    r = make_balanced_bst(arr[mid+1:])
-    head.l = l
-    head.r = r
-    return head
-
+    return ptr_list_head
 
 if __name__ == '__main__':
     array = range(10)
-    head = make_balanced_bst(array)
+    head = make_balanced_tree(array)
+
+    ptrs = link_same_height_nodes(head)    
     print array
     print head
+    print
+    print ptrs[2]

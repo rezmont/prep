@@ -91,8 +91,34 @@ def make_balanced_bst(arr):
     return head
 
 
+def find_paths_with_sum_from(head, path, already_sat, total):
+    if head is None:
+        return    
+    path = '{0}->{1}'.format(path, head.val)
+    if head.val + already_sat < total:
+        find_paths_with_sum_from(head.l, path, head.val + already_sat, total)
+        find_paths_with_sum_from(head.r, path, head.val + already_sat, total)
+    elif head.val + already_sat == total:
+        print path
+
+
+
+def find_paths_with_sum(head, total):
+    s = [head]
+    while len(s)>0:
+        ptr = s.pop()
+        if ptr is None:
+            continue
+        find_paths_with_sum_from(ptr, '', 0, total)
+        s.append(ptr.l)
+        s.append(ptr.r)
+        
+
 if __name__ == '__main__':
     array = range(10)
     head = make_balanced_bst(array)
     print array
     print head
+    print
+
+    find_paths_with_sum(head, 7)

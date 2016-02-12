@@ -1,5 +1,4 @@
 from collections import deque
-import sys
 
 class TreeNode(object):
     """docstring for TreeNode"""
@@ -52,7 +51,6 @@ class TreeNode(object):
             ret_strings.append(';'.join(ret_buff))
         return('\n'.join(ret_strings))
 
-
 def make_balanced_tree(arr):
     if len(arr) == 0:
         return None
@@ -72,27 +70,73 @@ def make_balanced_tree(arr):
     return head
 
 
-def make_balanced_bst(arr):
-    if len(arr) == 0:
+def search_for_path(head, path, a):
+    if head is None:
         return None
-    elif len(arr) == 1:
-        return TreeNode(arr[0])
-    elif len(arr) == 2:
-        head = TreeNode(arr[1])
-        head.add_left(arr[0])
-        return head
+    if head.val == a:
+        return '{0}, {1}'.format(path, head.val)
+    path = '{0}, {1}'.format(path, head.val)
+    ret_val = search_for_path(head.l, path, a)
+    if ret_val != None:
+        return ret_val
+    ret_val = search_for_path(head.r, path, a)
+    if ret_val != None:
+        return ret_val
+    return None
 
-    mid = len(arr)/2
-    head = TreeNode(arr[mid])
-    l = make_balanced_bst(arr[:mid])
-    r = make_balanced_bst(arr[mid+1:])
-    head.l = l
-    head.r = r
-    return head
+def covers(head, a):
+    if head is None:
+        return False
+    if head.val == a:
+        return True
+    ret_val = covers(head.l, a)
+    if ret_val != False:
+        return ret_val
+    ret_val = covers(head.r, a)
+    if ret_val != False:
+        return ret_val
+    return False
+
+
+def first_common_wo_additional_ds(head, a, b):
+    if head is None:
+        return False
+
+    l_cover = first_common_wo_additional_ds(head.l, a, b)
+    r_cover = first_common_wo_additional_ds(head.r, a, b)
+
+    # print head.val
+    # print l_cover, r_cover
+    
+    if (l_cover == a or head.val == a) and (r_cover == b or head.val == b):
+        return 'N[{0}]'.format(head.val)
+    if (l_cover == b or head.val == b) and (r_cover == a or head.val == a):
+        return 'N[{0}]'.format(head.val)
+
+    if l_cover != False:
+        return l_cover
+    if r_cover != False:
+        return r_cover
+    
+    if l_cover == False and head.val in {a, b}:
+        return head.val
+    if r_cover == False and head.val in {a, b}:
+        return head.val
+
+    return False
+
+
+def first_common_with_additional_ds(head, a, b):
+    p1 = search_for_path(head, '*', a)
+    p2 = search_for_path(head, '*', b)
+    print p1
+    print p2
+    
 
 
 if __name__ == '__main__':
     array = range(10)
-    head = make_balanced_bst(array)
-    print array
+    head = make_balanced_tree(array)
     print head
+    print
+    print first_common_wo_additional_ds(head, 6, 5)

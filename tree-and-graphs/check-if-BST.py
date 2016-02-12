@@ -1,5 +1,5 @@
-from collections import deque
 import sys
+from collections import deque
 
 class TreeNode(object):
     """docstring for TreeNode"""
@@ -52,7 +52,6 @@ class TreeNode(object):
             ret_strings.append(';'.join(ret_buff))
         return('\n'.join(ret_strings))
 
-
 def make_balanced_tree(arr):
     if len(arr) == 0:
         return None
@@ -70,7 +69,6 @@ def make_balanced_tree(arr):
             q.append(node.r)
     q.clear()
     return head
-
 
 def make_balanced_bst(arr):
     if len(arr) == 0:
@@ -90,9 +88,54 @@ def make_balanced_bst(arr):
     head.r = r
     return head
 
+def is_BST(head, min_val=(-sys.maxint - 1), max_val=sys.maxint):
+    val = head.val
+    is_leaf = True
+    if head.l is not None:
+        l_bst, l_min, l_max = is_BST(head.l, min_val, val)
+        if l_bst == False:
+            return False, 0, 0
+        is_leaf = False
+    if head.r is not None:
+        r_bst, r_min, r_max = is_BST(head.r, val+1, max_val)
+        if r_bst == False:
+            return False, 0, 0
+        is_leaf = False
+    
+    if is_leaf:
+        return True, val, val
+    else:
+        if head.l is None: 
+            if val < r_min:
+                return True, val, r_max
+            else:
+                return False, 0, 0
+        elif head.r is None:
+            if l_max <= val:
+                return True, l_min, val
+            else:
+                return False, 0, 0
+        elif l_max <= val and val < r_min:
+            return True, l_min, r_max
+        else:
+            return False, 0, 0
+
+
+def is_BST2(head, min_val=(-sys.maxint - 1), max_val=sys.maxint):
+    if head is None:
+        return True
+    else:
+        print head.val, min_val, max_val
+    if head.val > max_val or head.val < min_val:
+        return False
+    if (not is_BST2(head.r, head.val+1, max_val)) or (not is_BST2(head.l, min_val, head.val)):
+        return False
+    return True
+
 
 if __name__ == '__main__':
-    array = range(10)
-    head = make_balanced_bst(array)
-    print array
-    print head
+    arr = range(10)
+    # arr[4] = 100
+    head = make_balanced_bst(arr)
+    # head = make_balanced_tree(arr)
+    print is_BST2(head)
