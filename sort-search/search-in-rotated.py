@@ -59,11 +59,28 @@ def search(a, x):
 
     return False
 
+def find_smallest_book(arr):
+    l = 0
+    h = len(arr)-1
+    while l<h:
+        mid = l + (h-l)/2
+        print l, mid, h, arr[l], arr[mid], arr[h]
+        raw_input('...')
+        if arr[mid] > arr[h]:
+            l = mid + 1
+        else:
+            h = mid
+    return l
+
+
+
+
+
 if __name__ == '__main__':
-    a = range(8)
-    n = 4
+    a = range(20)
+    n = 12
     print a
     a = rotate2(a, n)
     print a
 
-    print search(a, 3)
+    print find_smallest_book(a)
